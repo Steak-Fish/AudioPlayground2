@@ -13,7 +13,6 @@ public:
     void render() override;
 private:
     std::vector<Oscillator> oscillators;
-    //std::atomic<bool> soloist{false};
     std::atomic<bool> mute{false};
     std::atomic<float> gain{0.5f};
 };

@@ -7,14 +7,9 @@
 
 NOscillator::NOscillator(int size) {
 
-    float root = 440.0f;
-
     oscillators.reserve(size);
     for (int i = 0; i < size; ++i) {
-        float freq = root * i / 8;  // harmonic frequency
-        float amp = 1.0f / (i + 3); // your amplitude choice
-
-        oscillators.push_back(Oscillator(freq, amp));  // uses move hopefully
+        oscillators.push_back(Oscillator(1.0f/(float) size));
     }
 
     for(int i = 0; i < 30; ++i) {
@@ -30,7 +25,7 @@ float NOscillator::process() {
     for (auto& voice : voices) {
         mixedSample += voice->process();
     }
-    //mixedSample /= static_cast<float>(voices.size()); // Normalize
+    mixedSample /= static_cast<float>(voices.size()); // Normalize
     return mixedSample * gain.load(RELAXED);
 }
 
@@ -40,12 +35,6 @@ void NOscillator::render() {
     bool muted = mute.load(RELAXED);
     ImGui::Checkbox("Muted##N-Oscillator", &muted);
     mute.store(muted, RELAXED);
-
-    /*
-    bool soloing = soloist.load(RELAXED);
-    ImGui::Checkbox("Solo##N-Oscillator", &soloing);
-    soloist.store(soloing, RELAXED);
-    */
     
     ImGui::Checkbox("Editing##N-Oscillator", &editing);
     ImGui::EndGroup();
@@ -88,8 +77,8 @@ float NOscillatorVoice::process() {
         mixedSample += osc.process(frequency, phases[index]);
         ++index;
     }
-    //mixedSample /= static_cast<float>(oscillators.size()); // Normalize
-    return mixedSample * envelopeAmp;
+    mixedSample /= static_cast<float>(oscillators.size());
+    return mixedSample * velocity * envelopeAmp;
 }
 
 void NOscillatorVoice::startNote(int note, int velocity) {

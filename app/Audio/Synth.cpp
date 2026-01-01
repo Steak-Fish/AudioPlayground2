@@ -32,6 +32,7 @@ void Synth::render() {
     if (ImGui::Button("Refresh MIDI Mapping")) {
         refreshMidiMapping();
     }
+    
     // Display the current port name or a placeholder
     const char* currentLabel = 
         (currentMidiPort >= 0 && currentMidiPort < (int) midiMapping.size())
@@ -64,11 +65,8 @@ void Synth::render() {
     ImGui::SliderFloat("Gain", &gainValue, 0.0f, 1.0f);
     gain.store(gainValue, RELAXED);
 
-    ImGui::BeginChild("Voices");
     nOscillator.render();
     ImGui::Separator();
-
-    ImGui::EndChild();
 
     std::vector<float> waveform;
     debugBuffer.getSnapshot(waveform);

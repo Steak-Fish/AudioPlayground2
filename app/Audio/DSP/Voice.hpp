@@ -6,10 +6,10 @@
 #include <algorithm>
 
 struct ADSR_Envelope {
-    std::atomic<float> attackTime = 0.01f;
-    std::atomic<float> decayTime = 0.5f;
-    std::atomic<float> sustainLevel = 0.5f;
-    std::atomic<float> releaseTime = 0.5f;
+    std::atomic<float> attackTime  = 0.015f;  // 15 ms
+    std::atomic<float> decayTime   = 0.18f;   // 180 ms
+    std::atomic<float> sustainLevel= 0.70f;   // 70%
+    std::atomic<float> releaseTime = 0.25f;   // 250 ms
 
     float sampleRate = 48000.0f;
 

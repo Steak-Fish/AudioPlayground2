@@ -33,7 +33,7 @@ struct Synth {
     float sampleRate = 48000.0f;
     std::atomic<float> gain = 0.5f;
 
-    NOscillator nOscillator{1};
+    NOscillator nOscillator{4};
     DebugBuffer debugBuffer{48000/256};
 
     void process(float* out, unsigned int nFrames);
