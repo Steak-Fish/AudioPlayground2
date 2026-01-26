@@ -1,25 +1,23 @@
 #include "Audio.hpp"
 
-#include "RtMidi.h"
-
 #include <cmath>
 
-void Audio::init(Synth* synth) {
+#include "RtMidi.h"
+#include "Playground.hpp"
+
+Audio::Audio(Playground* playground) {
     RtAudio::StreamParameters outParams;
     outParams.deviceId = rtAudio.getDefaultOutputDevice();
     outParams.nChannels = 2;
-
-    unsigned int bufferFrames = 256;   // Try 128, 64, or 32 for lower latency
-    unsigned int sampleRate   = 48000;
 
     try {
         rtAudio.openStream(
             &outParams, nullptr, // output only
             RTAUDIO_FLOAT32,
-            sampleRate,
-            &bufferFrames,
+            playground->sampleRate,
+            &playground->bufferFrames,
             &Audio::audioCallback,
-            synth //user data
+            playground //user data
         );
 
         rtAudio.startStream();
@@ -35,23 +33,60 @@ void Audio::init(Synth* synth) {
         // Ignore sysex, timing, active sense
         midiIn.ignoreTypes(true, true, true);
 
-        // Give the synth to the callback
-        midiIn.setCallback(&midiCallback, synth);
+        // Give the Playground to the callback
+        midiIn.setCallback(&midiCallback, playground);
 
+        refreshMidiMapping();
     } catch (RtMidiError &err) {
         err.printMessage();
     }
 
     std::cout << "Midi Initialized." << std::endl;
-
-    synth->midiIn = &midiIn;
 }
 
-void Audio::shutdown() {
+Audio::~Audio() {
     if (rtAudio.isStreamOpen()) {
         rtAudio.stopStream();
         rtAudio.closeStream();
     }
+
+    midiIn.closePort();
+}
+
+void Audio::render() {
+    ImGui::Begin("Synth Engine");
+    if (ImGui::Button("Refresh MIDI Mapping")) {
+        refreshMidiMapping();
+    }
+    
+    // Display the current port name or a placeholder
+    const char* currentLabel = 
+        (currentMidiPort >= 0 && currentMidiPort < (int) midiMapping.size())
+            ? midiMapping[currentMidiPort].c_str()
+            : "<none>";
+
+    if (ImGui::BeginCombo("MIDI Input Port", currentLabel)) {
+        for (int i = 0; i < (int) midiMapping.size(); i++) {
+
+            bool is_selected = (i == currentMidiPort);
+
+            if (ImGui::Selectable(midiMapping[i].c_str(), is_selected)) {
+                currentMidiPort = i;
+
+                midiIn.closePort();
+                midiIn.openPort(i);
+                std::cout << "Opened MIDI port: " << midiMapping[i] << std::endl;
+            }
+
+            // Highlight the selected item
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::End();
 }
 
 int Audio::audioCallback(
@@ -67,9 +102,9 @@ int Audio::audioCallback(
     }
 
     auto *buffer = static_cast<float *>(outputBuffer);
-    auto *synth  = static_cast<Synth *>(userData);
+    auto *playground  = static_cast<Playground *>(userData);
 
-    synth->process(buffer, nBufferFrames);
+    playground->process(buffer, nBufferFrames);
 
     return 0;
 }
@@ -79,7 +114,7 @@ void Audio::midiCallback(
     std::vector<unsigned char> *message,
     void *userData
 ) {
-    Synth* synth = static_cast<Synth*>(userData);
+    Playground* playground = static_cast<Playground*>(userData);
 
     if (message->size() < 3) return;
 
@@ -92,23 +127,37 @@ void Audio::midiCallback(
     switch (type) {
         case 0x90: // Note On
             if (data2 != 0)
-                synth->noteOn(data1, data2);
+                playground->noteOn(data1, data2);
             else
-                synth->noteOff(data1); // velocity 0 = note off
+                playground->noteOff(data1); // velocity 0 = note off
             break;
 
         case 0x80: // Note Off
-            synth->noteOff(data1);
+            playground->noteOff(data1);
             break;
 
         /*
         case 0xB0: // CC
-            synth->controlChange(data1, data2);
+            playground->controlChange(data1, data2);
             break;
 
         case 0xE0: // Pitch Bend
-            synth->pitchBend(data2, data1);
+            playground->pitchBend(data2, data1);
             break;
             */
+    }
+}
+
+void Audio::refreshMidiMapping() {
+    midiMapping.clear();
+    
+    unsigned int ports = midiIn.getPortCount();
+    if (ports == 0) {
+        std::cout << "No MIDI ports found!\n";
+        return;
+    }
+
+    for(unsigned int i = 0; i < ports; ++i) {
+        midiMapping.push_back(midiIn.getPortName(i));
     }
 }

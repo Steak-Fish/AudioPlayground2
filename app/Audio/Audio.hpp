@@ -1,12 +1,16 @@
 #pragma once
 
 #include "rtaudio/RtAudio.h"
-#include "Synth.hpp"
+#include "rtmidi/RtMidi.h"
+
+class Playground;
 
 class Audio {
 public:
-    void init(Synth* synth);
-    void shutdown();
+    Audio(Playground* Playground);
+    ~Audio();
+    
+    void render();
 
     static int audioCallback(
         void* outputBuffer, void*,
@@ -20,7 +24,13 @@ public:
         std::vector<unsigned char> *message,
         void *userData
     );
+
+    void refreshMidiMapping();
+    
 private:
     RtAudio rtAudio;
     RtMidiIn midiIn;
+
+    std::vector<std::string> midiMapping;
+    int currentMidiPort = -1;
 };
