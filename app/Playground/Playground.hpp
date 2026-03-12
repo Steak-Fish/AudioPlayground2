@@ -5,7 +5,6 @@
 #include <array>
 #include <cmath>
 
-#include "Project.hpp"
 #include "Instrument.hpp"
 #include "DebugBuffer.hpp"
 #include "NOscillator.hpp"
@@ -29,6 +28,4 @@ public:
 private:
     Audio audio{this};
     DebugBuffer debugBuffer{bufferFrames};
-    Transport transport;
-    std::vector<Track> tracks;
 };
