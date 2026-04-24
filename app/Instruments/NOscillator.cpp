@@ -47,10 +47,6 @@ void NOscillator::render() {
 
     if (editing) {
         ImGui::Begin("NOscillator Editor");
-        float gainValue = gain.load();
-        ImGuiKnobs::Knob("Gain", &gainValue, 0.0f, 1.0f, 0.0f, "%.3f %", ImGuiKnobVariant_Tick, 40.0f);
-        gain.store(gainValue, RELAXED);
-        ImGui::SameLine();
         envelope.render();
         for(size_t i = 0; i < oscillators.size(); ++i) {
             ImGui::PushID(static_cast<int>(i));

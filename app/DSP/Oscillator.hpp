@@ -15,6 +15,7 @@ enum class Waveform {
     SQUARE,
     SAW,
     TRIANGLE,
+    TANH,
     
     COUNT
 };
@@ -29,6 +30,7 @@ public:
     std::atomic<int> offset{0};
     std::atomic<float> gain;
     std::atomic<size_t> waveform;
+    std::atomic<float> drive = 1.0f;
 
     Waveform getWafeform() const;
 

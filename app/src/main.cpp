@@ -21,7 +21,7 @@ int main(void) {
     Playground playground = Playground();
     config.userData = &playground;
     config.appMajorVer = 1;
-    config.appMinorVer = 0;
+    config.appMinorVer = 1;
     config.appPatchVer = 0;
     config.title = "Audio Playground 2";
 

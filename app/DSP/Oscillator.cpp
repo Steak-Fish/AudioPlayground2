@@ -36,6 +36,9 @@ float Oscillator::process(float frequency, float& phase) {
     case Waveform::TRIANGLE:
         sample = 4.0f * std::fabs(phase - 0.5f) - 1.0f;
         break;
+    case Waveform::TANH:
+        sample = std::tanh(drive * std::sin(2.0f * M_PI * phase));
+        break;
     default:
         sample = 0;
     }
@@ -88,6 +91,8 @@ std::string waveformToString(Waveform waveform) {
         return ("Square");
     case Waveform::TRIANGLE:
         return ("Triangle");
+    case Waveform::TANH:
+        return ("Tanh");
     default:
         return ("Undefined");
     }
