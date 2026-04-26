@@ -19,6 +19,7 @@ int main(void) {
 
     Nova::EngineConfig config;
     Playground playground = Playground();
+    playground.instrument = new NOscillator(5);
     config.userData = &playground;
     config.appMajorVer = 1;
     config.appMinorVer = 1;

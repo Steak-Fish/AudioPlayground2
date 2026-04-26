@@ -17,7 +17,7 @@ public:
     unsigned int sampleRate = 48000;
     unsigned int bufferFrames = 256;
 
-    NOscillator nOscillator{5};
+    Instrument* instrument;
 
     void process(float* out, unsigned int nFrames);
     void noteOn(int midiNote, float velocity);

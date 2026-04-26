@@ -65,6 +65,14 @@ void Oscillator::render() {
     Waveform wf = static_cast<Waveform>(waveform.load(std::memory_order_relaxed));
     std::string wfString = waveformToString(wf);
 
+    if (wf == Waveform::TANH) {
+        float driveValue = drive.load(std::memory_order_relaxed);
+        if (ImGuiKnobs::Knob("Drive", &driveValue, 0.0f, 5.0f, 0.0f, "%.3f %", ImGuiKnobVariant_Tick, 35.0f)) {
+            drive.store(driveValue, std::memory_order_relaxed);
+        }
+        ImGui::SameLine();
+    }
+
     if (ImGui::BeginCombo("##Waveform", wfString.c_str())) {
         for (int i = 0; i < static_cast<int>(Waveform::COUNT); i++) {
             bool is_selected = (i == static_cast<int>(wf));
