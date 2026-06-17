@@ -6,3 +6,4 @@ app/libs/imgui/
 
 # Don't ask about it, it's an upcoming project that I'm working on
 DevBoard
+.artifacts/

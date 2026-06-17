@@ -1,4 +1,4 @@
-name: Build (CMake + Ninja)
+name: Build
 
 on:
   push:
@@ -9,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
 
     env:
       CC: gcc
@@ -35,21 +39,21 @@ jobs:
             librtmidi-dev \
             libglm-dev
 
-      - name: Configure CMake
+      - name: Configure CMake (${{ matrix.build_type }})
         run: |
           cmake \
             -S app \
             -B build \
             -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
-      - name: Build
+      - name: Build (${{ matrix.build_type }})
         run: |
           cmake --build build
 
-      - name: Upload binaries
+      - name: Upload binaries (${{ matrix.build_type }})
         uses: actions/upload-artifact@v4
         with:
-          name: build-bin
+          name: build-bin-${{ matrix.build_type }}
           path: bin/
           if-no-files-found: error

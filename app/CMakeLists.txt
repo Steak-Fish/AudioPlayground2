@@ -7,7 +7,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin)
 # Disable all tests/examples globally
 set(BUILD_TESTING OFF CACHE BOOL "Disable tests" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "Disable examples" FORCE)
-set(BUILD_JACK OFF CACHE BOOL "Disable JACK backend" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
 
 set(SKIP_DEMO ON CACHE BOOL "Disable Nova Engine examples" FORCE)
