@@ -20,10 +20,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Clone dependency
-        run: |
-          git clone https://github.com/Steak-Fish/Nova-Engine.git ./Nova-Engine
-
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -36,7 +32,8 @@ jobs:
             libgl1-mesa-dev \
             libglu1-mesa-dev \
             librtaudio-dev \
-            librtmidi-dev
+            librtmidi-dev \
+            libglm-dev
 
       - name: Configure CMake
         run: |

@@ -8,3 +8,6 @@
 [submodule "app/libs/rtmidi"]
 	path = app/libs/rtmidi
 	url = https://github.com/thestk/rtmidi.git
+[submodule "app/libs/Nova-Engine"]
+	path = app/libs/Nova-Engine
+	url = https://github.com/Steak-Fish/Nova-Engine.git
