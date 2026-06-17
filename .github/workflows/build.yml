@@ -22,7 +22,11 @@ jobs:
 
       - name: Clone dependency
         run: |
-          git clone https://github.com/Steak-Fish/Nova-Engine.git ./Nova-Engine
+          git init ./Nova-Engine
+          cd ./Nova-Engine
+          git remote add origin https://github.com/Steak-Fish/Nova-Engine.git
+          git fetch --depth 1 origin 0c13d23b2454a32647507470907d8995a4d5014f
+          git checkout FETCH_HEAD
 
       - name: Install system dependencies
         run: |
