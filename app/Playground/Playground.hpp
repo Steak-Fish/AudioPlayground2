@@ -7,17 +7,13 @@
 
 #include "Instrument.hpp"
 #include "DebugBuffer.hpp"
-#include "NOscillator.hpp"
 #include "Audio.hpp"
-
-#define RELAXED std::memory_order_relaxed
+#include "NOscillator.hpp"
 
 class Playground {
 public:
-    unsigned int sampleRate = 48000;
-    unsigned int bufferFrames = 256;
 
-    Instrument* instrument;
+    NOscillator instrument{3};
 
     void process(float* out, unsigned int nFrames);
     void noteOn(int midiNote, float velocity);

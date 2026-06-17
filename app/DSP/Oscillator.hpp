@@ -27,7 +27,12 @@ std::string waveformToString(Waveform waveform);
 class Oscillator {
 public:
     Oscillator(Waveform waveform, float gain);
-    std::atomic<int> offset{0};
+    Oscillator() {
+        waveform.store(static_cast<int>(Waveform::SINE), RELAXED);
+        gain = 0.1;
+    }
+    std::atomic<int> offset_semitones{0};
+    std::atomic<int> offset_cents{0};
     std::atomic<float> gain;
     std::atomic<size_t> waveform;
     std::atomic<float> drive = 1.0f;
@@ -41,7 +46,8 @@ public:
 
     // CUSTOM MOVE CONSTRUCTOR
     Oscillator(Oscillator&& other) noexcept
-        : offset(other.offset.load(std::memory_order_relaxed)),
+        : offset_semitones(other.offset_semitones.load(std::memory_order_relaxed)),
+          offset_cents(other.offset_cents.load(std::memory_order_relaxed)),
           gain(other.gain.load(std::memory_order_relaxed)) {}
     Oscillator& operator=(Oscillator&&) = default;
 

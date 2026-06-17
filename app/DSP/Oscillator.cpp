@@ -18,7 +18,9 @@ float Oscillator::process(float frequency, float& phase) {
         return 0.0f;
     }
     // Simple sine wave oscillator
-    float freq = transposeSemitones(frequency, offset.load(RELAXED));
+    float freq = frequency;
+    freq = transposeSemitones(freq, offset_semitones.load(RELAXED));
+    freq = transposeCents(freq, offset_cents.load(RELAXED));
     float g = gain.load(RELAXED);
 
     float sample;
@@ -50,9 +52,14 @@ float Oscillator::process(float frequency, float& phase) {
 }
 
 void Oscillator::render() {
-    int offsetVal = offset.load(std::memory_order_relaxed);
-    if (ImGuiKnobs::KnobInt("Offset", &offsetVal, -24, 24, 0.0f, "%i", ImGuiKnobVariant_Tick, 35.0f)) {
-        offset.store(offsetVal, std::memory_order_relaxed);
+    int offsetSemitonesVal = offset_semitones.load(std::memory_order_relaxed);
+    if (ImGuiKnobs::KnobInt("ST", &offsetSemitonesVal, -24, 24, 0.0f, "%i", ImGuiKnobVariant_Tick, 35.0f)) {
+        offset_semitones.store(offsetSemitonesVal, std::memory_order_relaxed);
+    }
+    ImGui::SameLine();
+    int offsetCentsVal = offset_cents.load(std::memory_order_relaxed);
+    if (ImGuiKnobs::KnobInt("CT", &offsetCentsVal, -100, 100, 0.0f, "%i", ImGuiKnobVariant_Tick, 35.0f)) {
+        offset_cents.store(offsetCentsVal, std::memory_order_relaxed);
     }
     ImGui::SameLine();
 

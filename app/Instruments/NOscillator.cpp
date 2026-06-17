@@ -46,7 +46,7 @@ void NOscillator::render() {
     gain.store(gainValue, RELAXED);
 
     if (editing) {
-        ImGui::Begin("NOscillator Editor");
+        ImGui::Begin("N-Oscillator Editor");
         envelope.render();
         for(size_t i = 0; i < oscillators.size(); ++i) {
             ImGui::PushID(static_cast<int>(i));

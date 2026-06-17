@@ -4,6 +4,12 @@
 
 #include "RtMidi.h"
 #include "Playground.hpp"
+#include "Relaxed.hpp"
+
+#ifndef BUFFERFRAMES
+#define BUFFERFRAMES
+unsigned int bufferFrames = 256;
+#endif
 
 Audio::Audio(Playground* playground) {
     RtAudio::StreamParameters outParams;
@@ -14,8 +20,8 @@ Audio::Audio(Playground* playground) {
         rtAudio.openStream(
             &outParams, nullptr, // output only
             RTAUDIO_FLOAT32,
-            playground->sampleRate,
-            &playground->bufferFrames,
+            sampleRate,
+            &bufferFrames,
             &Audio::audioCallback,
             playground //user data
         );

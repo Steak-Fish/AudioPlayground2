@@ -5,3 +5,7 @@
 float transposeSemitones(float baseHz, int semitoneOffset) {
     return baseHz * std::pow(2.0f, semitoneOffset / 12.0f);
 }
+
+float transposeCents(float baseHz, float centsOffset) {
+    return baseHz * std::pow(2.0f, centsOffset / 1200.0f);
+}

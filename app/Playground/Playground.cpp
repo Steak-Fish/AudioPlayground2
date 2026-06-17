@@ -8,11 +8,11 @@
 
 void Playground::process(float* out, unsigned int nFrames) {
 
-    if(!instrument) return;
+    //if(!instrument) return;
 
     for (unsigned int i = 0; i < nFrames; i++) {
 
-        float sample = instrument->process();
+        float sample = instrument.process();
 
         if(i < debugBuffer.buffer.size()) {
             debugBuffer.buffer[i] = sample;
@@ -24,11 +24,12 @@ void Playground::process(float* out, unsigned int nFrames) {
 };
 
 void Playground::noteOn(int midiNote, float velocity) {
-    instrument->startNote(midiNote, static_cast<int>(velocity * 127));
+    
+    instrument.startNote(midiNote, static_cast<int>(velocity * 127));
 }
 
 void Playground::noteOff(int midiNote) {
-    instrument->stopNote(midiNote);
+    instrument.stopNote(midiNote);
 }
 
 void Playground::render() {
@@ -37,14 +38,14 @@ void Playground::render() {
     //ImGui::Text("Sample Rate: %.1f", sampleRate);
 
     audio.render();
-    instrument->render();
+    instrument.render();
 
     std::vector<float> waveform;
     debugBuffer.getSnapshot(waveform);
     ImGui::PlotLines("Debug Waveform", waveform.data(), static_cast<int>(waveform.size()), 0, nullptr, -1.0f, 1.0f, ImVec2(0, 100));
 
-    if(ImGui::Button("Panic")) {
-        instrument->panic();
+    if(ImGui::Button("Panic", ImVec2(128, 64))) {
+        instrument.panic();
     }
 
     ImGui::End();
